@@ -10,7 +10,8 @@ redirect_from:
 
 Welcome to my webpage! 
 
-I finished my PhD at the University of Melbourne, working under the supervision of [Dr. Sarah Erfani](https://people.eng.unimelb.edu.au/smonazam/) and [Prof. Christopher Leckie](https://findanexpert.unimelb.edu.au/profile/6335-christopher-leckie). Currently, I am a postdoctoral research fellow in machine learning at the University of Melbourne node of ARC Centre of Excellence for Automated Decision-Making & Society (ADM+S). I am contributing to ADM+S Center’s Machines Research Program. My research entails developing algorithms that enable a systematic treatment of bias and unfairness in AI and automated decision-making.
+I am a Senior Applied Scientist at Oracle, developing the digital assistant technology using generative AI.
+I finished my PhD at the University of Melbourne, working under the supervision of [Dr. Sarah Erfani](https://people.eng.unimelb.edu.au/smonazam/) and [Prof. Christopher Leckie](https://findanexpert.unimelb.edu.au/profile/6335-christopher-leckie). Previously, I was a postdoctoral research fellow in machine learning at the University of Melbourne node of ARC Centre of Excellence for Automated Decision-Making & Society (ADM+S). I am contributing to ADM+S Center’s Machines Research Program.
 
 Mesmerized by generative models, I try to formulate various problems through the lens of generative modeling and bring that statistical perspective to them. In this area, I have an expertise with
 * Normalizing Flows
@@ -28,6 +29,9 @@ I am always happy to discuss research-related topics. Just shoot me an email! :)
 
 News
 ======
+ - Jan. 2024: Started as a Senior Applied Scientist @ Oracle!
+ - Dec. 2023: [AVATAR](https://arxiv.org/abs/2303.08500) is accepted to SatML2024! Details to follow.
+ - Dec. 2023: I am going to serve as an emergency reviewer for CVPR2024!
  - Oct. 2023: Gave a guest lecture on Security and Privacy in Aligned Language Models at the University of Melbourne.
  - Oct. 2023: Attneding the ICCV2023 in Paris!
  - Sep. 2023: Got recognized as an "outstanding reviewer" at ICCV2023!
