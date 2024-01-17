@@ -11,7 +11,7 @@ redirect_from:
 Welcome to my webpage! 
 
 I am a Senior Applied Scientist at Oracle, developing the digital assistant technology using generative AI.
-I finished my PhD at the University of Melbourne, working under the supervision of [Dr. Sarah Erfani](https://people.eng.unimelb.edu.au/smonazam/) and [Prof. Christopher Leckie](https://findanexpert.unimelb.edu.au/profile/6335-christopher-leckie). Previously, I was a postdoctoral research fellow in machine learning at the University of Melbourne node of ARC Centre of Excellence for Automated Decision-Making & Society (ADM+S). I am contributing to ADM+S Center’s Machines Research Program.
+I finished my PhD at the University of Melbourne, working under the supervision of [Dr. Sarah Erfani](https://people.eng.unimelb.edu.au/smonazam/) and [Prof. Christopher Leckie](https://findanexpert.unimelb.edu.au/profile/6335-christopher-leckie). Previously, I was a postdoctoral research fellow in machine learning at the University of Melbourne node of ARC Centre of Excellence for Automated Decision-Making & Society (ADM+S).
 
 Mesmerized by generative models, I try to formulate various problems through the lens of generative modeling and bring that statistical perspective to them. In this area, I have an expertise with
 * Normalizing Flows
