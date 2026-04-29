@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Linear Rational Spline Flows — Hadi Dolatabadi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Inter:wght@300..600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../shared.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.css" crossorigin="anonymous">
+<style>
+  /* Article layout: Tufte-style sidenotes, centered body, full-width figures */
+  .article-wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 40px;
+    position: relative;
+    z-index: 2;
+  }
+  .article-hero {
+    padding: 64px 0 40px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .article-hero .art-kicker {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent-ink);
+    margin-bottom: 16px;
+  }
+  .article-hero .art-kicker::before { content: "❧ "; color: var(--accent); margin-right: 4px; }
+  .article-hero h1 {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: clamp(38px, 4.8vw, 60px);
+    line-height: 1.02;
+    letter-spacing: -0.025em;
+    margin: 0 0 16px;
+    font-variation-settings: "opsz" 144, "SOFT" 30;
+    max-width: 20ch;
+  }
+  .article-hero h1 em { font-style: italic; color: var(--accent-ink); font-variation-settings: "opsz" 144, "SOFT" 100; }
+  .article-hero .subtitle {
+    font-family: var(--serif);
+    font-size: 21px;
+    color: var(--muted);
+    line-height: 1.45;
+    max-width: 640px;
+    margin: 0 0 24px;
+    font-style: italic;
+    font-weight: 350;
+  }
+  .article-hero .byline {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    display: flex;
+    gap: 18px;
+    flex-wrap: wrap;
+  }
+  .article-hero .byline b { color: var(--accent-ink); font-weight: 500; }
+
+  .article-body {
+    max-width: 640px;
+    margin: 56px 0 80px;
+    font-family: var(--serif);
+    font-size: 19px;
+    line-height: 1.65;
+    color: var(--ink);
+    font-variation-settings: "opsz" 16;
+  }
+  .article-body p { margin: 0 0 1.1em; text-align: justify; hyphens: auto; -webkit-hyphens: auto; }
+  .article-body .drop::first-letter {
+    font-family: var(--serif);
+    float: left;
+    font-size: 68px;
+    line-height: 0.86;
+    padding: 8px 12px 0 0;
+    color: var(--accent-ink);
+    font-weight: 400;
+  }
+  .article-body h2 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 28px;
+    letter-spacing: -0.015em;
+    line-height: 1.15;
+    margin: 2.2em 0 0.6em;
+    font-variation-settings: "opsz" 36;
+  }
+  .article-body h2 em { font-style: italic; color: var(--accent-ink); }
+  .article-body em { font-style: italic; color: var(--accent-ink); }
+  .article-body a { color: var(--accent-ink); border-bottom: 1px solid rgba(176,69,42,0.3); }
+  .article-body h3 { font-family: var(--serif); font-weight: 450; font-size: 22px; letter-spacing: -0.012em; line-height: 1.2; margin: 1.6em 0 0.4em; }
+  .article-body h3 em { font-style: italic; color: var(--accent-ink); }
+  .article-body img { max-width: 100%; display: block; margin: 1.4em auto; border: 1px solid var(--rule); border-radius: 3px; }
+  .article-body figure { margin: 1.4em 0; }
+  .article-body figure img { margin: 0; }
+  .article-body figure figcaption { font-family: var(--serif); font-style: italic; font-size: 15px; color: var(--muted); margin-top: 8px; text-align: center; }
+  .article-body pre { background: var(--paper-2); border: 1px solid var(--rule); border-radius: 4px; padding: 14px 16px; font-family: var(--mono); font-size: 13.5px; line-height: 1.5; overflow-x: auto; margin: 1.2em 0; }
+  .article-body code { font-family: var(--mono); font-size: 0.92em; background: var(--paper-2); padding: 1px 4px; border-radius: 3px; }
+  .article-body pre code { background: none; padding: 0; }
+  .article-body ul, .article-body ol { margin: 0.6em 0 1em; padding-left: 1.4em; }
+  .article-body li { margin: 0.3em 0; }
+  .article-body blockquote { border-left: 3px solid var(--accent); padding: 4px 0 4px 16px; margin: 1.2em 0; font-style: italic; color: var(--muted); }
+
+  /* Sidenotes */
+  .sidenote {
+    float: right;
+    clear: right;
+    margin-right: -420px;
+    margin-top: 0.15em;
+    margin-bottom: 0.6em;
+    margin-left: 2em;
+    width: 340px;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 14.5px;
+    color: var(--muted);
+    line-height: 1.48;
+    position: relative;
+    border-left: 2px solid var(--accent);
+    padding-left: 14px;
+  }
+  .sidenote .sn-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    margin-right: 6px;
+    font-style: normal;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+  }
+  .sidenote em { color: var(--accent-ink); font-style: italic; }
+  .sn-ref {
+    color: var(--accent);
+    vertical-align: super;
+    font-size: 0.7em;
+    font-family: var(--mono);
+    cursor: help;
+    font-style: normal;
+    padding: 0 1px;
+    font-weight: 500;
+  }
+
+  @media (max-width: 1080px) {
+    .sidenote {
+      float: none;
+      clear: both;
+      margin: 1em 0;
+      width: auto;
+      padding: 12px 16px;
+      background: var(--paper-2);
+      border-left: 2px solid var(--accent);
+      font-size: 15px;
+    }
+  }
+
+  .article-body .katex-display { margin: 1.3em 0; }
+  .article-body .katex-display > .katex { font-size: 1.05em; }
+
+  .article-nav {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+    padding: 18px 0;
+    border-top: 1px solid var(--rule);
+    margin-top: 60px;
+    text-transform: uppercase;
+  }
+  .article-nav a { color: var(--accent-ink); border: none; }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="wide mast-row">
+    <a class="brand" href="../../index.html">
+      <span>Hadi <em>Dolatabadi</em></span>
+      <span class="rule-tag">Studio · № IV</span>
+    </a>
+    <nav class="primary">
+      <a href="../../index.html#blog">All posts</a>
+      <a href="../../index.html#about">About</a>
+      <a href="../../index.html#papers">Papers</a>
+      <a href="https://x.com/hmdolatabadi">X</a>
+    </nav>
+  </div>
+</header>
+
+<article>
+  <div class="article-wrap">
+
+    <header class="article-hero">
+      <div class="art-kicker">An essay · Generative modelling · 13 min read</div>
+      <h1>Linear <em>Rational</em> Spline Flows.</h1>
+      <p class="subtitle">A quick overview of normalizing flows, coupling layers, and our AISTATS 2020 paper.</p>
+      <div class="byline">
+        <span>by <b>Hadi Dolatabadi</b></span>
+        <span>17 October 2020</span>
+        <span>Melbourne</span>
+
+      </div>
+    </header>
+
+    <div class="article-body">
+
+      <p class="drop">In this blog post, I am going to summarize our work on <a href="http://proceedings.mlr.press/v108/dolatabadi20a" target="_blank">linear rational spline flows</a>, which was published at the 23rd International Conference on Artificial Intelligence and Statistics (AISTATS). I will first provide a brief overview of normalizing flows and coupling layer transformations that are a popular approach to construct such models. Then, I will briefly go over our approach to designing coupling layer transformations for flow-based modeling. Note that this is only a very brief introduction to normalizing flows. For a thorough review, see these awesome surveys [<a href="https://arxiv.org/abs/1912.02762" target="_blank">Papamakarios et al.</a>, <a href="https://arxiv.org/abs/1908.09257" target="_blank">Kobyzev et al.</a>].</p>
+
+      <h2>Normalizing Flows: what are they?!</h2>
+
+      <p>Imagine that we have a dataset, and we wish to generate more samples of this dataset. To this end, normalizing flows attempt to consider the data as i.i.d samples of an unknown probability density. Parameters of this probability distribution are then adjusted so that they match the samples of the given dataset. Normalizing flows use the change of variables formula to formulate such a distribution. So, if we want to give a one-sentence summary of normalizing flows we can say that they are a flexible family of probability distributions that allow us to fit any data observations to a density function. In this sense, they are just like other methods of density estimation such as kernel density estimation.</p>
+
+      <p>To understand the change of variables formula, let's assume that we have a bunch of i.i.d random vector observations \(\mathbf{x}_1\), \(\mathbf{x}_2\), \(\dots\), \(\mathbf{x}_n\), where \(\mathbf{x}_i \in \mathbb{R}^d\). Flow-based models assume that there is a certain density behind the generation of such samples. To model this density, let \(\mathbf{Z}~\sim~p(\mathbf{z})\) denote a random vector with a well-known distribution such as standard normal. This density is referred to as the <em>base distribution</em>. Now, to re-shape this universal base density into our data distribution, we pass \(\mathbf{Z}\) through a transformation \(\mathbf{f}_{\boldsymbol{\theta}}(\cdot)\) to construct what we believe is our data \(\mathbf{X}=\mathbf{f}_{\boldsymbol{\theta}}(\mathbf{Z})\). Here, \({\boldsymbol{\theta}}\) is the set of parameters that we aim to optimize to fit our parametric model to the data distribution. In flow-based modeling, we are looking to write down the data distribution \(p_\boldsymbol{\theta}(\mathbf{x})\) explicitly. Hence, this transformation \(\mathbf{f}_{\boldsymbol{\theta}}(\cdot)\) has to satisfy certain properties so that we can make use of the change of variables formula. Specifically, if we assume that \(\mathbf{f}_{\boldsymbol{\theta}}(\cdot)\) is invertible and differentiable, then the change of variables formula allows us to connect the base distribution \(p(\mathbf{z})\) to our data density \(p_\boldsymbol{\theta}(\mathbf{x})\) by:</p>
+
+      \[\nonumber p_\boldsymbol{\theta}(\mathbf{x}) = p(\mathbf{z})~\left|\mathrm{det}\Big(\dfrac{\partial \mathbf{f}_{\boldsymbol{\theta}}}{\partial \mathbf{z}}\Big)\right|^{-1}.\]
+
+      <p>The multiplicative term on the right-hand side is known as the absolute value of the Jacobian determinant. This term accounts for the change in the volume of \(\mathbf{Z}\) due to applying \(\mathbf{f}_{\boldsymbol{\theta}}(\cdot)\). A challenge in designing practical flow-based models is to deal with the computational complexity of this term. As you know, computing determinant of a general \(d \times d\) matrix requires \(\mathcal{O}(d^3)\) operations which is burdensome. In the next section, we will introduce coupling layer transformations that by design reduce this computational cost to \(\mathcal{O}(d)\) operations.</p>
+
+      <p>Now that we have defined our density function by an invertible and differentiable transformation, we can use maximum likelihood estimation to find the set of parameters \({\boldsymbol{\theta}}\):</p>
+
+      \[\nonumber {\boldsymbol{\theta}}^{*} = \arg\max_{\boldsymbol{\theta}} \dfrac{1}{n} \sum_{i=1}^{n} \log p_{\boldsymbol{\theta}}\left(\mathbf{x}_i\right)\]
+
+      <p>Note that a nice property of the change of variables formula is that it allows for a straightforward composition of multiple flow-based models. To understand this property, let's assume that instead of trying to map \(\mathbf{Z}\) to \(\mathbf{X}\) using a single transformation, we break down \(\mathbf{f}_{\boldsymbol{\theta}}(\cdot)\) as a composition of \(K\) number of invertible and differentiable transformations:</p>
+
+      \[\nonumber \mathbf{f} = \mathbf{f}_1 \circ \mathbf{f}_2 \circ \cdots \circ \mathbf{f}_K\]
+
+      <p>This transformation is shown in the following figure.</p>
+
+      <p><img src="https://hmdolatabadi.github.io/images/lrs/NF_ML.png" alt="NF_ML" /></p>
+
+      <p>Using the chain rule and the fact that \(\mathrm{det}(AB) = \mathrm{det}(A)~\mathrm{det}(B)\), we can write the log-likelihood of our overall transformation as:</p>
+
+      \[\nonumber \log p_\boldsymbol{\theta}(\mathbf{x}) = \log p(\mathbf{z}) - \sum_{k=1}^{K} \log \left|\mathrm{det}\Big(\dfrac{\partial \mathbf{f}_{k}}{\partial \mathbf{z}_k}\Big)\right|.\]
+
+      <p>Now that we understood the principles of normalizing flows, it is time to see how we can construct an invertible and differentiable transformation using neural networks.</p>
+
+      <h2>Coupling Layer Transformations</h2>
+
+      <p>In the previous section, we saw that normalizing flows need an invertible, differentiable transformation. Also, we need to reduce the computational complexity of the Jacobian determinant to have a practical transformation. Note that since we can compose different flow-based models easily, we may choose a simple transformation for each \(\mathbf{f}_{k}\) and then compose many of them together to build a very expressive transformation. In this sense, they are like ordinary neural networks: instead of trying to come up with a complex shallow network, we choose to have a simple deep one.</p>
+
+      <p>A popular approach to building such transformations is through coupling layers [<a href="https://arxiv.org/abs/1605.08803" target="_blank">Dinh et al.</a>]. In a single coupling layer, we split the data into two equal parts. We send half of the data to the next layer without changing it. The other half, however, is send through an invertible, differentiable transformation that is parametrized based on the first half of the data. This special structure results in a lower-triangular Jacobian. Thus, computing the Jacobian determinant is going to cost \(\mathcal{O}(d)\).</p>
+
+      <p>In particular, let's assume again that we have some data \(\mathbf{z} \in \mathbb{R}^{d}\) that we want to transform using \(\mathbf{f}(\cdot)\). In a coupling layer, we first split the data into two parts \(\mathbf{z}_1, \mathbf{z}_2 \in \mathbb{R}^{d/2}\). Based on this splitting, we transform the data using:</p>
+
+      \[\begin{align} \mathbf{x}_1 &= \mathbf{z}_1 \nonumber \\ \mathbf{x}_2 &= \mathbf{g}_{\pmb{\theta}({\mathbf{x}_1})}(\mathbf{z}_2). \end{align}\]
+
+      <p>In this equation, \(\mathbf{g}_{\pmb{\theta}({\mathbf{x}_1})}(\cdot)\) is an invertible, differentiable, and element-wise transformation with parameters \(\pmb{\theta}({\mathbf{x}_1})\). As you can see, our parameters \(\pmb{\theta}\) are computed using the first half of the data \({\mathbf{x}_1}\). As such, the Jacobian of this type of transformation is always lower-triangular. The inverse of this transformation can also be computed via</p>
+
+      \[\begin{aligned} \mathbf{z}_1 &= \mathbf{x}_1 \nonumber \\ \mathbf{z}_2 &= \mathbf{g}^{-1}_{\pmb{\theta}({\mathbf{z}_1})}(\mathbf{x}_2)\nonumber. \end{aligned}\]
+
+      <p>As seen, the inverse of the overall transformation does not depend on the parameter function \(\pmb{\theta}(\cdot)\) to be invertible. Thus, we can use any general function as our parameter function \(\pmb{\theta}(\cdot)\). In the literature, neural networks and their variants (such as CNNs, ResNets, etc.) are usually used.</p>
+
+      <p>Below you can see a figure of a single coupling layer.</p>
+
+      <p><img src="https://hmdolatabadi.github.io/images/lrs/Coupling_Layer.png" alt="Coupling Layer" /></p>
+
+      <p>Now, one may ask that this way, half of the data does not go under any transformation! To deal with this problem, we change the role of \(\mathbf{z}_1\) and \(\mathbf{z}_2\) parts in consecutive layers. In other words, if in the current layer, we keep \(\mathbf{z}_1\) fixed and transform \(\mathbf{z}_2\), in the next layer, we fix \(\mathbf{z}_2\) and transform \(\mathbf{z}_1\).</p>
+
+      <p>Although this type of transformation seems simplistic, it can model very complicated data such as images with thousands of pixels. Of course, the more expressive our \(\mathbf{g}\), the more powerful our overall transformation. However, we have to be careful as using complex transformations may require a lot of computational power. For more information about coupling layers, see the surveys introduced in the beginning.</p>
+
+      <h2>Linear Rational Splines for Flow-based Modeling</h2>
+
+      <p>Now that we introduced normalizing flows and coupling layers, it is time to see how we can construct one using linear rational splines. We saw that in Eq. (1) we need an invertible, differentiable, and element-wise transformation \(\mathbf{g}(\cdot)\). We also said that this transformation is defined through a set of parameters \(\pmb{\theta}(\cdot)\) that are determined using a function of arbitrary complexity.</p>
+
+      <p>In this work, we propose to formulate each element of the mapping \(\mathbf{g}(\cdot)\) using linear rational splines (LRS). In particular, LRS's are piece-wise functions where each of the pieces are linear rational functions of the form \(y=\tfrac{ax+b}{cx+d}\). Two key elements of an LRS are its number of intervals (bins) and their locations. In the context of spline functions, each bin boundary points are called knots.</p>
+
+      <p>LRS's are not invertible in general. Hence, we need to find a workaround to make them invertible. On the bright side, LRS's are differentiable inside each interval. The only concern is at the knot points, which need to be \(\mathcal{C}^1\) continuous. <a href="https://www.sciencedirect.com/science/article/abs/pii/016783969290038Q" target="_blank">Fuhr &amp; Kallay</a> propose an algorithm to construct such monotone (and as a result, invertible) and continuous LRS's.</p>
+
+      <p>Consider this alternative problem: let's say that we have the knot locations \(\big\{\big(x^{(k)},~y^{(k)}\big)\big\}_{k=0}^{K}\), and assume that they are monotone, meaning that for all \(x_i &lt; x_j\) we have \(y_i &lt; y_j\). Also, let's assume to know the derivatives at these locations \({\big\{d^{(k)}&gt;0\big\}_{k=0}^{K}}\). Now, we want to fit a monotone, differentiable LRS to such knot points.</p>
+
+      <p>To solve this problem, we should evaluate the value and also the derivative of the knot points. Then, we should make sure that these values are equal to each other. Consider the interval \(\big[x^{(k)}, x^{(k+1)}\big]\), where \(x^{(k)}\) and \(x^{(k+1)}\) are two consecutive knot points. Let \(g(x)\) denote our linear rational function for. We can re-write this function as</p>
+
+      \[\nonumber g(x)=\dfrac{w^{(k)} y^{(k)} (1-\phi) + w^{(k+1)} y^{(k+1)} \phi}{w^{(k)} (1-\phi) + w^{(k+1)} \phi},\]
+
+      <p>where \(0~&lt;~\phi=\big(x-x^{(k)}\big)/\big(x^{(k+1)}-x^{(k)}\big)~&lt;~1\). Moreover, \(w^{(k)}\) and \(w^{(k+1)}\) are two arbitrary weights. Using this re-parameterization, we see that \(g(x^{(k)})=y^{(k)}\) and \(g(x^{(k+1)})=y^{(k+1)}\) are automatically satisfied. As seen, we are only left with one degree of freedom (the ratio of w^{(k+1)} to w^{(k)}). However, we still need two degrees of freedom to satisfy the derivative constraints at the start and end of the interval. What should we do?</p>
+
+      <p><a href="https://www.sciencedirect.com/science/article/abs/pii/016783969290038Q" target="_blank">Fuhr &amp; Kallay</a> resolve this issue by adding an intermediate knot point. In particular, they assume that we have an intermediate point \(x^{(m)} = (1-\lambda) x^{(k)} + \lambda x^{(k+1)}\), where \(0&lt;\lambda&lt;1\). Instead of trying to fit a single LRS to the interval \(\big[x^{(k)}, x^{(k+1)}\big]\), <a href="https://www.sciencedirect.com/science/article/abs/pii/016783969290038Q" target="_blank">Fuhr &amp; Kallay</a> suggest to fit two of them to the intervals \(\big[x^{(k)}, x^{(m)}\big]\) and \(\big[x^{(m)}, x^{(k+1)}\big]\). The value and also derivative of the intermediate point \(x^{(m)}\) are then treated as free parameters, providing us with the required degree of freedom to satisfy the derivative constraint. Assume that for each interval \(\big[x^{(k)}, x^{(k+1)}\big]\), we assign an intermediate point using \(\lambda^{(k)}\). <a href="https://www.sciencedirect.com/science/article/abs/pii/016783969290038Q" target="_blank">Fuhr &amp; Kallay</a> show that we can find monotone, \(\mathcal{C}^1\) continuous LRS of the form:</p>
+
+      \[\nonumber g(\phi)=\begin{cases} \hfil \dfrac{w^{(k)} y^{(k)} \big(\lambda^{(k)}-\phi\big) + w^{(m)} y^{(m)} \phi}{w^{(k)} \big(\lambda^{(k)}-\phi\big) + w^{(m)} \phi} & 0 \leq \phi \leq \lambda^{(k)} \\ \\ \dfrac{w^{(m)} y^{(m)} \big(1-\phi\big) + w^{(k+1)} y^{(k+1)} \big(\phi - \lambda^{(k)}\big)}{w^{(m)} \big(1-\phi\big) + w^{(k+1)} \big(\phi-\lambda^{(k)}\big)} & \lambda^{(k)} \leq \phi \leq 1 \end{cases},\]
+
+      <p>for appropriate set of parameters \(w^{(k)}\), \(w^{(m)}\), \(w^{(k+1)}\). The complete algorithm can be found in our paper. Below, you can see a monotone and differentiable LRS interpolation for six arbitrary knots using different values of \(\lambda\).</p>
+
+      <p><img src="https://hmdolatabadi.github.io/images/lrs/lambda.png" alt="lambda" /></p>
+
+      <p>One may ask: what does all this have to do with a flow-based model? Remember that for a coupling layer, we needed an invertible, element-wise, and differentiable function \(\mathbf{g}(\cdot)\). Our idea is to use LRS's as \(\mathbf{g}(\cdot)\). To this end, we need to specify the number of knot points, their location, and also the first derivative. We consider all of these as our parameter set \(\pmb{\theta}\). As stated in the previous section, these parameters are the output of a function \(\pmb{\theta}(\cdot)\) that takes the fixed half of the data as input. We then use the algorithm of <a href="https://www.sciencedirect.com/science/article/abs/pii/016783969290038Q" target="_blank">Fuhr &amp; Kallay</a> for monotone LRS fitting to specify our function \(\mathbf{g}(\cdot)\). And ta-da, we finally have a normalizing flow! :D</p>
+
+      <h2>Simulation Results: Synthetic 2d Data</h2>
+
+      <p>As a simple example, we showcase the ability of our framework in estimating a synthetic 2d data distribution. Let's assume that we have the following data samples, and we want to find its underlying probability distribution.</p>
+
+      <p><img src="https://hmdolatabadi.github.io/images/lrs/ap_rings_data.png" alt="ap_rings_data" /></p>
+
+      <p>We construct a two-layer flow-based model, where we use coupling layers with LRS transformations. We then use stochastic gradient descent to maximize the log-likelihood objective. Here, we use a uniform distribution as our base density. The following image shows the estimated probability density. It is awesome, isn't it? ;)</p>
+
+      <p><img src="https://hmdolatabadi.github.io/images/lrs/ap_rings_density.png" alt="ap_rings_density" /></p>
+
+      <p>We can even go further and simulate more complicated cases. For example, we can construct 2d data samples based on the intensity of a grayscale image. We can then treat these points as i.i.d. data samples, and try to find their probability density. The figure below shows an example image. As you can see, our method is flexible enough to model such a complicated distribution.</p>
+
+      <p><img src="https://hmdolatabadi.github.io/images/lrs/Synth_2d_LRS.png" alt="Synth_2d_LRS" /></p>
+
+      <h2>Simulation Results: Image Datasets</h2>
+
+      <p>We can use a similar approach for image datasets: assume that they are i.i.d. samples of an unknown probability distribution. With such an assumption, we can use normalizing flows to estimate this density and generate new samples. We also simulate this case for several famous image datasets such as MNIST, CIFAR-10, and ImageNet. Below you can see samples of the flow-based model trained on these datasets.</p>
+
+      <p><img src="https://hmdolatabadi.github.io/images/lrs/Image_Datasets.png" alt="Image_Datasets" /></p>
+
+      <h2>Concluding Remarks</h2>
+
+      <p>In this blog post, I provided a brief introduction to normalizing flows. After reviewing flow-based models, we went over the coupling layer transformations. Then, we showed how one can construct a flow-based model using linear rational splines. Finally, we showed a few use-cases of flow-based modeling in synthetic and real-world data. More details can be found in our <a href="http://proceedings.mlr.press/v108/dolatabadi20a" target="_blank">AISTATS paper</a>. Also, our implementation is available at <a href="https://github.com/hmdolatabadi/LRS_NF" target="_blank">this repository</a>. Should you have any question, please do not hesitate to contact me.</p>
+
+      <div class="article-nav">
+        <a href="../../index.html">← back to the studio</a>
+        <span></span>
+      </div>
+
+    </div>
+
+  </div>
+</article>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-row">
+      <div class="sign">— Hadi.</div>
+      <div class="foot-links">
+        <a href="https://x.com/hmdolatabadi">X</a>
+        <a href="https://github.com/hmdolatabadi">GitHub</a>
+        <a href="#">Scholar</a>
+        <a href="mailto:hadi@pluralis.ai">Email</a>
+        <a href="#">RSS</a>
+      </div>
+    </div>
+    <div class="colophon">
+      <span>Math via KaTeX</span>
+      <span>v1.0 · April 2026</span>
+    </div>
+  </div>
+</footer>
+
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.js" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/contrib/auto-render.min.js" crossorigin="anonymous"
+  onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}, {left: '\\(', right: '\\)', display: false}, {left: '\\[', right: '\\]', display: true}], throwOnError: false});"></script>
+
+</body>
+</html>

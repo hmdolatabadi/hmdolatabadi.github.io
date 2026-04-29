@@ -1,0 +1,561 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>AdvFlow: Black-box Adversarial Attacks using Normalizing Flows — Hadi Dolatabadi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Inter:wght@300..600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../shared.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.css" crossorigin="anonymous">
+<style>
+  /* Article layout: Tufte-style sidenotes, centered body, full-width figures */
+  .article-wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 40px;
+    position: relative;
+    z-index: 2;
+  }
+  .article-hero {
+    padding: 64px 0 40px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .article-hero .art-kicker {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent-ink);
+    margin-bottom: 16px;
+  }
+  .article-hero .art-kicker::before { content: "❧ "; color: var(--accent); margin-right: 4px; }
+  .article-hero h1 {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: clamp(38px, 4.8vw, 60px);
+    line-height: 1.02;
+    letter-spacing: -0.025em;
+    margin: 0 0 16px;
+    font-variation-settings: "opsz" 144, "SOFT" 30;
+    max-width: 20ch;
+  }
+  .article-hero h1 em { font-style: italic; color: var(--accent-ink); font-variation-settings: "opsz" 144, "SOFT" 100; }
+  .article-hero .subtitle {
+    font-family: var(--serif);
+    font-size: 21px;
+    color: var(--muted);
+    line-height: 1.45;
+    max-width: 640px;
+    margin: 0 0 24px;
+    font-style: italic;
+    font-weight: 350;
+  }
+  .article-hero .byline {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    display: flex;
+    gap: 18px;
+    flex-wrap: wrap;
+  }
+  .article-hero .byline b { color: var(--accent-ink); font-weight: 500; }
+
+  .article-body {
+    max-width: 640px;
+    margin: 56px 0 80px;
+    font-family: var(--serif);
+    font-size: 19px;
+    line-height: 1.65;
+    color: var(--ink);
+    font-variation-settings: "opsz" 16;
+  }
+  .article-body p { margin: 0 0 1.1em; text-align: justify; hyphens: auto; -webkit-hyphens: auto; }
+  .article-body .drop::first-letter {
+    font-family: var(--serif);
+    float: left;
+    font-size: 68px;
+    line-height: 0.86;
+    padding: 8px 12px 0 0;
+    color: var(--accent-ink);
+    font-weight: 400;
+  }
+  .article-body h2 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 28px;
+    letter-spacing: -0.015em;
+    line-height: 1.15;
+    margin: 2.2em 0 0.6em;
+    font-variation-settings: "opsz" 36;
+  }
+  .article-body h2 em { font-style: italic; color: var(--accent-ink); }
+  .article-body em { font-style: italic; color: var(--accent-ink); }
+  .article-body a { color: var(--accent-ink); border-bottom: 1px solid rgba(176,69,42,0.3); }
+  .article-body h3 { font-family: var(--serif); font-weight: 450; font-size: 22px; letter-spacing: -0.012em; line-height: 1.2; margin: 1.6em 0 0.4em; }
+  .article-body h3 em { font-style: italic; color: var(--accent-ink); }
+  .article-body img { max-width: 100%; display: block; margin: 1.4em auto; border: 1px solid var(--rule); border-radius: 3px; }
+  .article-body figure { margin: 1.4em 0; }
+  .article-body figure img { margin: 0; }
+  .article-body figure figcaption { font-family: var(--serif); font-style: italic; font-size: 15px; color: var(--muted); margin-top: 8px; text-align: center; }
+  .article-body pre { background: var(--paper-2); border: 1px solid var(--rule); border-radius: 4px; padding: 14px 16px; font-family: var(--mono); font-size: 13.5px; line-height: 1.5; overflow-x: auto; margin: 1.2em 0; }
+  .article-body code { font-family: var(--mono); font-size: 0.92em; background: var(--paper-2); padding: 1px 4px; border-radius: 3px; }
+  .article-body pre code { background: none; padding: 0; }
+  .article-body ul, .article-body ol { margin: 0.6em 0 1em; padding-left: 1.4em; }
+  .article-body li { margin: 0.3em 0; }
+  .article-body blockquote { border-left: 3px solid var(--accent); padding: 4px 0 4px 16px; margin: 1.2em 0; font-style: italic; color: var(--muted); }
+  .article-body table { border-collapse: collapse; margin: 1.4em auto; font-family: var(--sans, var(--serif)); font-size: 13.5px; max-width: 100%; overflow-x: auto; display: block; }
+  .article-body table th, .article-body table td { border: 1px solid var(--rule); padding: 6px 10px; text-align: center; }
+  .article-body table th { background: var(--paper-2); font-weight: 500; }
+
+  /* Sidenotes */
+  .sidenote {
+    float: right;
+    clear: right;
+    margin-right: -420px;
+    margin-top: 0.15em;
+    margin-bottom: 0.6em;
+    margin-left: 2em;
+    width: 340px;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 14.5px;
+    color: var(--muted);
+    line-height: 1.48;
+    position: relative;
+    border-left: 2px solid var(--accent);
+    padding-left: 14px;
+  }
+  .sidenote .sn-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    margin-right: 6px;
+    font-style: normal;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+  }
+  .sidenote em { color: var(--accent-ink); font-style: italic; }
+  .sn-ref {
+    color: var(--accent);
+    vertical-align: super;
+    font-size: 0.7em;
+    font-family: var(--mono);
+    cursor: help;
+    font-style: normal;
+    padding: 0 1px;
+    font-weight: 500;
+  }
+
+  @media (max-width: 1080px) {
+    .sidenote {
+      float: none;
+      clear: both;
+      margin: 1em 0;
+      width: auto;
+      padding: 12px 16px;
+      background: var(--paper-2);
+      border-left: 2px solid var(--accent);
+      font-size: 15px;
+    }
+  }
+
+  .article-body .katex-display { margin: 1.3em 0; }
+  .article-body .katex-display > .katex { font-size: 1.05em; }
+
+  .article-nav {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+    padding: 18px 0;
+    border-top: 1px solid var(--rule);
+    margin-top: 60px;
+    text-transform: uppercase;
+  }
+  .article-nav a { color: var(--accent-ink); border: none; }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="wide mast-row">
+    <a class="brand" href="../../index.html">
+      <span>Hadi <em>Dolatabadi</em></span>
+      <span class="rule-tag">Studio · № IV</span>
+    </a>
+    <nav class="primary">
+      <a href="../../index.html#blog">All posts</a>
+      <a href="../../index.html#about">About</a>
+      <a href="../../index.html#papers">Papers</a>
+      <a href="https://x.com/hmdolatabadi">X</a>
+    </nav>
+  </div>
+</header>
+
+<article>
+  <div class="article-wrap">
+
+    <header class="article-hero">
+      <div class="art-kicker">An essay · Generative modelling · 18 min read</div>
+      <h1><em>AdvFlow</em>: Black-box Adversarial Attacks using Normalizing Flows.</h1>
+      <p class="subtitle">A quick overview of our NeurIPS 2020 paper.</p>
+      <div class="byline">
+        <span>by <b>Hadi Dolatabadi</b></span>
+        <span>28 October 2020</span>
+        <span>Melbourne</span>
+
+      </div>
+    </header>
+
+    <div class="article-body">
+
+      <p class="drop">In this blog post, we give an overview of our recent work entitled "AdvFlow: Inconspicuous Black-box Adversarial Attacks using Normalizing Flows." This work has been accepted to the 34th Conference on Neural Information Processing Systems (NeurIPS 2020). You can find the camera-ready version of the paper <a href="https://arxiv.org/abs/2007.07435" target="_blank">here</a>. Also, our implementation is available at <a href="https://github.com/hmdolatabadi/AdvFlow" target="_blank">this repository</a>.</p>
+
+      <p>We begin with a brief introduction to adversarial attacks. Then, we give an overview of search gradients from Natural Evolution Strategies (NES). Afterward, we present AdvFlow that is a combination of normalizing flows with NES for black-box adversarial example generation. Finally, we go over some of the simulation results. Note that some basic familiarity with normalizing flows is assumed in this blog post. We have already written a blog post on normalizing flows that you can find <a href="https://hmdolatabadi.github.io/posts/2020/10/lrs/" target="_blank">here</a>. So, let's get started!</p>
+
+      <h2>Adversarial Attacks</h2>
+
+      <p>Deep neural networks (DNN) have revolutionized machine learning during the past decade. Today, they are used in various tasks, including speech-to-text translation, object detection, and image segmentation. Despite their huge success, many aspects of their behavior are yet to be fully understood. A particular failure of DNNs that you may have heard of is their adversarial vulnerability.</p>
+
+      <p>It is shown that DNNs are susceptible to tiny but carefully designed changes in their input. For example, we may have a trained DNN classifier to discriminate different images for us. We expect that for all samples of the same class we get the same output by the classifier. Instead, an input image can be manipulated in a way that while it looks like the original one, the DNN classifier assigns an entirely different label to it. This issue is fundamental and needs to be addressed somehow; otherwise, we may get unwanted behavior from our models in the real-world.</p>
+
+      <p><img src="https://hmdolatabadi.github.io/images/advflow/adv_mechanism.png" alt="adv_mechanism" /></p>
+
+      <p>There are numerous ways one can construct such inputs, known as adversarial examples. Here, we assume that image classifiers are the ones that we are going to attack. So, let's consider a DNN classifier \({\mathcal{C}(\cdot): \mathcal{X}^{d} \rightarrow \mathcal{P}^{k}}\), where \(\mathcal{X}^{d}\) is the set of input images, and \(\mathcal{P}^{k}\) are \(k\)-dimensional probability vectors. When the true class label of an image \(\mathbf{x}\) is \(y\), we expect that the \(y\)-th element of the DNN output \(\mathbf{p}=\mathcal{C}(\mathbf{x})\) would be the maximum one. This way, we can say that the classifier has assigned the correct label to the input image.</p>
+
+      <p>As a first step, we need a criterion to define what we exactly mean when we say "a similar image to the true one." The easiest way of writing down this criterion is to consider all images whose \(\ell_p\) distance to the original image is less than \(\epsilon\). In particular, let \(\mathbf{x}\) denote the original, clean image. Then, we can define the set of similar images to \(\mathbf{x}\) using</p>
+
+      \[\nonumber \mathcal{S}(\mathbf{x}) = \left\{\mathbf{x}' \in \mathcal{X}^{d}~\big\rvert~\lVert{\mathbf{x}' - \mathbf{x}}\rVert_{p}\leq \epsilon \right\},\]
+
+      <p>for an appropriate choice of \(\epsilon\).</p>
+
+      <p>The next step is to find an image \(\mathbf{x}'\) in the set \(\mathcal{S}(\mathbf{x})\) such that the classifier assigns a wrong label to it. Since we know that the set \(\mathcal{S}(\mathbf{x})\) only contains similar images to the original one \(\mathbf{x}\), we expect our DNN classifier to always output the same correct label. So, when it fails to do so, we can say that we have found an adversarial image. Mathematically, assume that we have a clean image \(\mathbf{x}\) that belongs to the class \(y\). In this case, we expect that the \(y\)-th element of the classifier output would be greater than the rest. In our notation, it translates as</p>
+
+      \[\nonumber \forall {c \neq y} ~~~~~~ {\mathcal{C}(\mathbf{x})_{y} &gt; \mathcal{C}(\mathbf{x})_{c}}.\]
+
+      <p>Now, let's consider an image \(\mathbf{x}'\) from the set \(\mathcal{S}(\mathbf{x})\). For this image to be adversarial, we need to have \({\mathcal{C}(\mathbf{x}')_{y} \leq \max_{c \neq y} \mathcal{C}(\mathbf{x}')_{c}}\) (why?). This means that while our image \(\mathbf{x}'\) is similar to the true one, the classifier assigns a wrong label to it. <a href="https://arxiv.org/abs/1608.04644" target="_blank">Carlini &amp; Wagner</a> rewrite this objective as</p>
+
+      \[\nonumber \mathcal{L}(\mathbf{x}')=\max\big\{0, \log \mathcal{C}(\mathbf{x}')_{y} - \max_{c \neq y} \log \mathcal{C}(\mathbf{x}')_{c}\big\}.\]
+
+      <p>It can be shown that \({\mathcal{L}(\mathbf{x}') \geq 0}\). The minimum occurs whenever \(\mathcal{L}(\mathbf{x}')\) becomes zero. In this case, we are guaranteed to have \({\mathcal{C}(\mathbf{x}')_{y} \leq \max_{c \neq y} \mathcal{C}(\mathbf{x}')_{c}}\) (why?), which is our original objective. Writing the objective this way makes it bounded below, and hence, suitable for numerical minimization.</p>
+
+      <p>Finally, we are ready to put all the ingredients together. Remember that we were looking to find similar images to the clean one (or \(\mathbf{x}' \in \mathcal{S}(\mathbf{x})\)) such that the classifier assigns the wrong label to it (or \({\mathcal{C}(\mathbf{x}')_{y} \leq \max_{c \neq y} \mathcal{C}(\mathbf{x}')_{c}}\)). We can write this as the following minimization problem:</p>
+
+      \[ \DeclareMathOperator*{\argmin}{arg\,min} {\mathbf{x}}_{adv}=\argmin_{\mathbf{x}' \in \mathcal{S}(\mathbf{x})} \mathcal{L}(\mathbf{x}').\]
+
+      <p>If we can find a minimizer to our objective function, we say that we have successfully attacked a DNN classifier.</p>
+
+      <h3>Black-box vs. White-box Attacks</h3>
+
+      <p>Now that we have seen what is an adversarial example and how to construct one, let's go over their categorization. As we saw in Eq. (1), finding an adversarial example is equivalent to solving an optimization problem involving the classifier. Based on the amount of information that we assume to have while attacking a DNN classifier, we can broadly categorize current methods into two: white-box and black-box. In <em>white-box</em> attacks, we assume that we know everything about the target classifier, from its internal architecture to its weights. This way, we can utilize our knowledge about the classifier to take its gradient and minimize Eq. (1). <em>Black-box</em> attacks, however, assume that we do not know anything about the internal structure of the target classifier. We can only query the classifier and see the output. Also, sometimes we have a certain threshold for the number of times that we can query the classifier. Thus, we have to work harder to come up with adversarial examples in this case. In this paper, we design black-box adversarial attacks as they seem to be more realistic.</p>
+
+      <p>This concludes our short introduction to adversarial attacks. For a more thorough review, please do check out this amazing NeurIPS tutorial by <a href="https://adversarial-ml-tutorial.org/" target="_blank">Madry &amp; Kolter</a>.</p>
+
+      <h2>Natural Evolution Strategies (NES)</h2>
+
+      <p>In the previous section, we saw how one can generate an adversarial image by optimizing Eq. (1). Also, we said that we are looking for a way to solve this optimization problem in the black-box setting, meaning that we can only work with the input-output pairs.</p>
+
+      <p>This is a well-studied problem in the field of optimization, and there are various ways of solving such problems. A famous approach is the idea of search gradients from <a href="https://jmlr.org/papers/v15/wierstra14a.html" target="_blank">Natural Evolution Strategies (NES)</a>. Instead of optimizing \(\mathcal{L}(\mathbf{x}')\) directly, NES defines a parametric probability distribution over the set of inputs \(\mathbf{x}'\), and then tries to optimize the expectation of \(\mathcal{L}(\mathbf{x}')\) over this parametric distribution. The parameters of this distribution can then be adjusted so that we get the minimum value on average. As we will see, this procedure does not require taking the gradients of the objective. This property makes NES the perfect candidate for our purposes.</p>
+
+      <p>In particular, assume that \({p(\mathbf{x'}\mid\boldsymbol{\psi})}\) denotes the search distribution with parameters \({\boldsymbol{\psi}}\). NES replaces the objective of Eq. (1) with</p>
+
+      \[ J(\boldsymbol{\psi})=\mathbb{E}_{p(\mathbf{x'}\mid\boldsymbol{\psi})}\left[\mathcal{L}(\mathbf{x}')\right].\]
+
+      <p>In other words, instead of trying to minimize \(\mathcal{L}(\mathbf{x}')\) directly, we fit a parametric distribution to the set of possible solutions. We do this by minimizing the expectation of our original loss. This means that we expect the distribution \(p(\mathbf{x'}\mid\boldsymbol{\psi})\) to generate samples that on average minimize our loss \(\mathcal{L}(\mathbf{x}')\).</p>
+
+      <p>Numerical minimization of \(J(\boldsymbol{\psi})\) requires computing its gradient with respect to \(\boldsymbol{\psi}\). To this end, we can exploit the "log-likelihood trick":</p>
+
+      \[\begin{aligned}\nonumber \nabla_{\boldsymbol{\psi}}J(\boldsymbol{\psi}) &\stackrel{(1)}{=} \nabla_{\boldsymbol{\psi}}\mathbb{E}_{p(\mathbf{x'}\mid\boldsymbol{\psi})}\left[\mathcal{L}(\mathbf{x}')\right]\\\nonumber &\stackrel{(2)}{=} \nabla_{\boldsymbol{\psi}} \int \mathcal{L}(\mathbf{x}') p(\mathbf{x'}\mid\boldsymbol{\psi})\mathrm{d}\mathbf{x}'\\\nonumber &\stackrel{(3)}{=} \int \mathcal{L}(\mathbf{x}') \nabla_{\boldsymbol{\psi}}p(\mathbf{x'}\mid\boldsymbol{\psi})\mathrm{d}\mathbf{x}'\\\nonumber &\stackrel{(4)}{=} \int \mathcal{L}(\mathbf{x}') \frac{\nabla_{\boldsymbol{\psi}}p(\mathbf{x'}\mid\boldsymbol{\psi})}{p(\mathbf{x'}\mid\boldsymbol{\psi})}p(\mathbf{x'}\mid\boldsymbol{\psi})\mathrm{d}\mathbf{x}'\\\nonumber &\stackrel{(5)}{=} \int \mathcal{L}(\mathbf{x}') \nabla_{\boldsymbol{\psi}}\log\big(p(\mathbf{x'}\mid\boldsymbol{\psi})\big) p(\mathbf{x'}\mid\boldsymbol{\psi})\mathrm{d}\mathbf{x}'\\ &\stackrel{(6)}{=} \mathbb{E}_{p(\mathbf{x'}\mid\boldsymbol{\psi})}\left[\mathcal{L}(\mathbf{x}') \nabla_{\boldsymbol{\psi}}\log\big(p(\mathbf{x'}\mid\boldsymbol{\psi})\big)\right]. \end{aligned}\]
+
+      <p>Here, (1) is the definition of \(J(\boldsymbol{\psi})\), (2) is the definition of expectation, (3) is because we can replace the integration and differentiation order, (4) is a factorization, (5) is by the definition of the \(\log(\cdot)\) gradient, and (6) is again the definition of the expectation. As you see, the gradient of \(J(\boldsymbol{\psi})\) with respect to \(\boldsymbol{\psi}\) only involves querying the objective/classifier.</p>
+
+      <p>Now, we can minimize \(J(\boldsymbol{\psi})\) using gradient descent. We first initialize \(\boldsymbol{\psi}\) randomly, and then update it by computing \(\boldsymbol{\psi} \leftarrow \boldsymbol{\psi} - \alpha \nabla_{\boldsymbol{\psi}}J(\boldsymbol{\psi})\) iteratively. Here, \(\alpha\) is the learning rate, and \(\nabla_{\boldsymbol{\psi}}J(\boldsymbol{\psi})=\mathbb{E}_{p(\mathbf{x'}\mid\boldsymbol{\psi})}\left[\mathcal{L}(\mathbf{x}') \nabla_{\boldsymbol{\psi}}\log\big(p(\mathbf{x'}\mid\boldsymbol{\psi})\big)\right]\).</p>
+
+      <h2>AdvFlow</h2>
+
+      <p>We are finally ready to present AdvFlows. As we saw earlier, we should define an appropriate distribution \({p(\mathbf{x'}\mid\boldsymbol{\psi})}\) over \(\mathbf{x'}\) to use NES. To this end, we propose to exploit the power of normalizing flows in modeling probability distributions.</p>
+
+      <p>As we have already seen in <a href="https://hmdolatabadi.github.io/posts/2020/10/lrs/" target="_blank">this blog post</a>, normalizing flows model the data distribution via transforming a universal base density (such as standard normal) to the data distribution. To do this, they use stacked layers of invertible neural networks (INN). Specifically, let \(\mathbf{X} \sim p(\mathbf{x})\) denote the data distribution. We can model the data as an appropriately trained INN \(\mathbf{f}(\cdot)\) applied to a standard normal \(\mathbf{Z} \sim p(\mathbf{z})=\mathcal{N}(\mathbf{z}\mid\mathbf{0}, I)\) random vector. This is where the change of variables formula comes into play, helping us to write the distribution of \(\mathbf{X}=\mathbf{f}(\mathbf{Z})\) as</p>
+
+      \[\nonumber p(\mathbf{x}) = p(\mathbf{z})\left|\mathrm{det}\Big(\dfrac{\partial \mathbf{f}}{\partial \mathbf{z}}\Big)\right|^{-1}.\]
+
+      <p>Here, we are looking to model the distribution of the adversarial examples \(\mathbf{x}' \in \mathcal{S}(\mathbf{x})\). We propose to exploit normalizing flows for this matter. To this end, we first train a flow-based model \(\mathbf{f}(\cdot)\) on the clean data distribution. Since the adversaries look like the clean image, we speculate that their distribution is also following the clean data distribution closely. So, instead of changing the distribution entirely, we only change its base distribution from \(\mathcal{N}(\mathbf{z}\mid\mathbf{0}, I)\) to \(\mathcal{N}(\mathbf{z}\mid\boldsymbol{\mu}, \sigma^2 I)\). Here, \(\boldsymbol{\mu}\) and \(\sigma\) are the NES parameter set \(\boldsymbol{\psi}\), and we treat the flow-based model \(\mathbf{f}(\cdot)\) as a fixed transformation. In other words, we write:</p>
+
+      \[ \mathbf{x}'=\mathrm{proj}_{\mathcal{S}}\big(\mathbf{f}(\mathbf{z})\big),\qquad\mathbf{z}\sim\mathcal{N}(\mathbf{z}\mid\boldsymbol{\mu}, \sigma^2 I)\]
+
+      <p>where \(\mathrm{proj}_{\mathcal{S}}(\cdot)\) projects the adversaries to the set \(\mathcal{S}(\mathbf{x})\). Now, we can re-write Eq. (2) for our choice of distribution as:</p>
+
+      \[\begin{aligned} J(\boldsymbol{\psi}) &\stackrel{(1)}{=} J(\boldsymbol{\mu}, \sigma) \nonumber\\ &\stackrel{(2)}{=} \mathbb{E}_{p(\mathbf{x'}\mid\boldsymbol{\mu}, \sigma)}\left[\mathcal{L}(\mathbf{x}')\right] \nonumber\\ &\stackrel{(3)}{=} \mathbb{E}_{\mathcal{N}(\mathbf{z}\mid\boldsymbol{\mu}, \sigma^2 I)}\left[\mathcal{L}\bigg(\mathrm{proj}_{\mathcal{S}}\big(\mathbf{f}(\mathbf{z})\big)\bigg)\right]. \end{aligned}\]
+
+      <p>In this derivation, (1) is because we defined \(\boldsymbol{\psi}=\{\boldsymbol{\mu}, \sigma\}\), (2) is the definition of our surrogate objective, and (3) is due to the rule of <a href="https://en.wikipedia.org/wiki/Law_of_the_unconscious_statistician" target="_blank">the lazy statistician</a>. Next, we should compute the gradient of \(J(\boldsymbol{\mu}, \sigma)\) with respect to \(\boldsymbol{\psi}=\{\boldsymbol{\mu}, \sigma\}\). To decrease the computational burden, we set \(\sigma\) by hyper-parameter tuning, and only optimize \(\boldsymbol{\mu}\). The gradient \(\nabla_{\boldsymbol{\mu}}J(\boldsymbol{\mu}, \sigma)\) can be computed using Eq. (3) as</p>
+
+      \[ \nabla_{\boldsymbol{\mu}}J(\boldsymbol{\mu}, \sigma) = \mathbb{E}_{\mathcal{N}(\mathbf{z}\mid\boldsymbol{\mu}, \sigma^2 I)}\left[\mathcal{L}\bigg(\mathrm{proj}_{\mathcal{S}}\big(\mathbf{f}(\mathbf{z})\big)\bigg) \nabla_{\boldsymbol{\mu}}\log \mathcal{N}(\mathbf{z}\mid\boldsymbol{\mu}, \sigma^2 I)\right].\]
+
+      <p>A nice property of this equation is that \(\nabla_{\boldsymbol{\mu}}\log \mathcal{N}(\mathbf{z}\mid\boldsymbol{\mu}, \sigma^2 I)\) can be computed in closed-form. Hence, in each iteration of AdvFlow, we first generate some samples \(\mathbf{z}_i\) from the distribution \(\mathcal{N}(\mathbf{z}\mid\boldsymbol{\mu}, \sigma^2 I)\). We then evaluate \(\mathcal{L}\bigg(\mathrm{proj}_{\mathcal{S}}\big(\mathbf{f}(\mathbf{z}_i)\big)\bigg)\) and \(\nabla_{\boldsymbol{\mu}}\log \mathcal{N}(\mathbf{z}_i\mid\boldsymbol{\mu}, \sigma^2 I)\) for these samples. Then, \(\nabla_{\boldsymbol{\mu}}J(\boldsymbol{\mu}, \sigma)\) is approximated by forming the average of \(\mathcal{L}\bigg(\mathrm{proj}_{\mathcal{S}}\big(\mathbf{f}(\mathbf{z}_i)\big)\bigg) \nabla_{\boldsymbol{\mu}}\log \mathcal{N}(\mathbf{z}_i\mid\boldsymbol{\mu}, \sigma^2 I)\) over \(i\), and we can finally use this approximation to update \({\boldsymbol{\mu}}\) by</p>
+
+      \[ \boldsymbol{\mu} \leftarrow \boldsymbol{\mu} - \alpha \nabla_{\boldsymbol{\mu}}J(\boldsymbol{\mu}, \sigma).\]
+
+      <p>To help the algorithm converge faster, we first map the clean image \(\mathbf{x}\) to its base distribution representation by \(\mathbf{z}=\mathbf{f}^{-1}(\mathbf{x})\). We then add a small additive vector \({\boldsymbol{\delta}_z}=\boldsymbol{\mu} + \sigma \boldsymbol{\epsilon}\) (where \(\boldsymbol{\epsilon}\sim\mathcal{N}(\boldsymbol{\epsilon}\mid\mathbf{0}, I)\)) to \(\mathbf{z}\) to be our adversarial example representation in the base distribution space. This step makes total sense: as we expect our adversarial image to be close to the clean image, their latent representations are also going to be close. This conclusion is due to the differentiability and also invertibility of the normalizing flows.</p>
+
+      <p>This concludes AdvFlows for black-box adversarial example generation. You can see a step-by-step procedure in the GIF below.</p>
+
+      <p><img src="https://hmdolatabadi.github.io/images/advflow/AdvFlow.gif" alt="AdvFlow" /></p>
+
+      <h3>AdvFlow Interpretations</h3>
+
+      <p>There are two beautiful interpretations of AdvFlows. First, we can think of AdvFlows as a search over the base distribution of flow-based models. We map the clean image to the latent space and then try to search in the neighborhood of our image in the base distribution space for an adversarial image. Since we have pre-trained the flow-based model, the adversarial examples are going to be like the clean data, with the perturbations taking the structure of the data.</p>
+
+      <p>Secondly, and more importantly, we can interpret AdvFlows from a distributional perspective. We first initialize the distribution of adversarial images with that of the clean data. The only difference is that we transform the base distribution by an affine mapping. This tiny change would help us change the clean data distribution into one that generates adversarial examples!</p>
+
+      <h3>AdvFlow for High-resolution Images</h3>
+
+      <p>Although flow-based models have seen a lot of advances in recent months, their application to high-resolution image data is still computationally expensive. To deal with this issue, we propose a small adjustment to our original AdvFlow framework so that we can use them for high-resolution data. To this end, we decrease the resolution of the clean image and try to come up with an adversarial image in a low-dimensional space using AdvFlow. Then, we compute the difference between the clean and adversarial images in the low-dimensional space and map the difference to high-dimensions using a bilinear up-sampler. This difference is then added to the clean, high-resolution image to give our adversarial image. The diagram of this adjustment is shown below.</p>
+
+      <p><img src="https://hmdolatabadi.github.io/images/advflow/AdvFlow_HighRes.png" alt="AdvFlow_HighRes" /></p>
+
+      <h2>Simulation Results</h2>
+
+      <p>In this section, we present the most important simulation results. You can find the details as well as more simulation results in our paper.</p>
+
+      <h3>Fooling Adversarial Example Detectors</h3>
+
+      <p>One approach to defend DNN classifiers against adversarial attacks is through adversarial example detectors. This way, a detector is trained and put before the classifier. Whenever an input is sent to the classifier, first it has to pass the detector to determine whether it is adversarial or not.</p>
+
+      <p>There are various adversarial example detectors. A common assumption among such methods is that the adversarial examples come from a different distribution than the clean data. From this perspective, they suit our purpose of assessing whether AdvFlows generate adversarial examples that follow the clean data distribution or not.</p>
+
+      <p>We compare AdvFlows with a similar distributional black-box attack method called <a href="https://arxiv.org/abs/1905.00441" target="_blank">\(\mathcal{N}\)Attack</a>. We pre-train the flow-based part of our model using clean training data. As an ablation study, we also take a randomly initialized AdvFlow into account to see the effect of the pre-training.</p>
+
+      <p>Table 1 shows the detection rate (in AUROC) and the accuracy of three adversarial example detectors for the black-box adversarial examples generated by AdvFlow and \(\mathcal{N}\)Attack. As seen, the detection of trained AdvFlow attacks is more difficult than \(\mathcal{N}\)Attack. This supports our statement earlier that AdvFlows result in adversarial examples that are closer to the clean data distribution. Also, you see that before training the flow-based model, AdvFlows generate adversarial examples that are easily detectable. This indicates the importance of pre-training the flow-based models on clean data.</p>
+
+      <p><em>Table: Area under the receiver operating characteristic curve (AUROC) and accuracy of detecting adversarial examples generated by <a href="https://github.com/Cold-Winter/Nattack">NATTACK</a> and AdvFlow (un. for un-trained and tr. for pre-trained NF) using <a href="https://github.com/xingjunm/lid_adversarial_subspace_detection">LID</a>, <a href="https://github.com/pokaxpoka/deep_Mahalanobis_detector">Mahalanobis</a>, and <a href="https://github.com/EvZissel/Residual-Flow">Res-Flow</a> adversarial attack detectors.</em></p>
+
+      <table>
+        <tbody>
+          <tr>
+            <th style="text-align:left" rowspan="2">Data</th>
+            <th style="text-align:center">Metric</th>
+            <th style="text-align:center" colspan="3">AUROC(%)</th>
+            <th style="text-align:center" colspan="3">Detection Acc.(%)</th>
+          </tr>
+          <tr>
+            <th style="text-align:center">Method</th>
+            <th style="text-align:center">𝒩<span class="smallcaps">Attack</span></th>
+            <th style="text-align:center">AdvFlow (un.)</th>
+            <th style="text-align:center">AdvFlow (tr.)</th>
+            <th style="text-align:center">𝒩<span class="smallcaps">Attack</span></th>
+            <th style="text-align:center">AdvFlow (un.)</th>
+            <th style="text-align:center">AdvFlow (tr.)</th>
+          </tr>
+          <tr>
+            <th style="text-align:left" rowspan="3">CIFAR-10</th>
+            <td>LID</td>
+            <td>78.69</td>
+            <td>84.39</td>
+            <td><strong>57.59</strong></td>
+            <td>72.12</td>
+            <td>77.11</td>
+            <td><strong>55.74</strong></td>
+          </tr>
+          <tr>
+            <td>Mahalanobis</td>
+            <td>97.95</td>
+            <td>99.50</td>
+            <td><strong>66.85</strong></td>
+            <td>95.59</td>
+            <td>97.46</td>
+            <td><strong>62.21</strong></td>
+          </tr>
+          <tr>
+            <td>Res-Flow</td>
+            <td>97.90</td>
+            <td>99.40</td>
+            <td><strong>67.03</strong></td>
+            <td>94.55</td>
+            <td>97.21</td>
+            <td><strong>62.60</strong></td>
+          </tr>
+          <tr>
+            <th style="text-align:left" rowspan="3">SVHN</th>
+            <td>LID</td>
+            <td><strong>57.70</strong></td>
+            <td>58.92</td>
+            <td>61.11</td>
+            <td><strong>55.60</strong></td>
+            <td>56.43</td>
+            <td>58.21</td>
+          </tr>
+          <tr>
+            <td>Mahalanobis</td>
+            <td>73.17</td>
+            <td>74.67</td>
+            <td><strong>64.72</strong></td>
+            <td>68.20</td>
+            <td>69.46</td>
+            <td><strong>60.88</strong></td>
+          </tr>
+          <tr>
+            <td>Res-Flow</td>
+            <td>69.70</td>
+            <td>74.86</td>
+            <td><strong>64.68</strong></td>
+            <td>64.53</td>
+            <td>68.41</td>
+            <td><strong>61.13</strong></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Fooling Vanilla and Defended Classifiers</h3>
+
+      <p>As our final simulation result, we see the performance of AdvFlows in contrast to <a href="https://github.com/MadryLab/blackbox-bandits" target="_blank">Bandits &amp; Priors</a>, <a href="https://github.com/gaussian-attack/Nattack" target="_blank">\(\mathcal{N}\)Attack</a>, and <a href="https://github.com/cg563/simple-blackbox-attack" target="_blank">SimBA</a>. For the defended classifiers, we use <a href="https://github.com/locuslab/fast_adversarial" target="_blank">fast adversarial training</a>. The architecture of our models is the famous <a href="https://github.com/KaimingHe/deep-residual-networks" target="_blank">ResNet-50</a>. We set the maximum number of queries to 10,000 and try to attack both vanilla and adversarially trained classifiers.</p>
+
+      <p>Table 2 shows our simulation results for CIFAR-10, SVHN, and ImageNet datasets. For CIFAR-10 and SVHN we apply AdvFlows directly, while for ImageNet we use the alternative version of AdvFlows. As can be seen, our method improves upon the performance of the baselines in the defended scenarios.</p>
+
+      <p><em>Table: Success rate and the average number of queries in attacking CIFAR-10, SVHN, and ImageNet classifiers. For a fair comparison, we first find the samples where all the attack methods are successful, and then compute the average of queries among these samples. All attacks are with respect to <span class="math inline">\(\ell_{\infty}\)</span> norm with <span class="math inline">\(\epsilon=8/255\)</span>.</em></p>
+
+      <table>
+        <tbody>
+          <tr>
+            <th style="text-align:left" rowspan="2">Data</th>
+            <th style="text-align:center" rowspan="2">Architecture</th>
+            <th style="text-align:center" rowspan="2">Clean Acc(%)</th>
+            <th style="text-align:center" colspan="4">Success Rate(%)</th>
+            <th style="text-align:center" colspan="4">Average Number of Queries</th>
+          </tr>
+          <tr>
+            <th style="text-align:center">Bandits</th>
+            <th style="text-align:center"><span class="math inline">\(\mathcal{N}\)</span><span class="smallcaps">Attack</span></th>
+            <th style="text-align:center">SimBA</th>
+            <th style="text-align:center">AdvFlow (ours)</th>
+            <th style="text-align:center">Bandits</th>
+            <th style="text-align:center"><span class="math inline">\(\mathcal{N}\)</span><span class="smallcaps">Attack</span></th>
+            <th style="text-align:center">SimBA</th>
+            <th style="text-align:center">AdvFlow (ours)</th>
+          </tr>
+          <tr>
+            <th style="text-align:left" rowspan="2">CIFAR-10</th>
+            <td>Van. ResNet</td>
+            <td>91.75</td>
+            <td>96.75</td>
+            <td>99.85</td>
+            <td><strong>99.96</strong></td>
+            <td>99.37</td>
+            <td>795.28</td>
+            <td><strong>252.13</strong></td>
+            <td>286.05</td>
+            <td>1051.18</td>
+          </tr>
+          <tr>
+            <td>Def. ResNet</td>
+            <td>79.09</td>
+            <td>45.20</td>
+            <td>45.19</td>
+            <td>43.57</td>
+            <td><strong>49.08</strong></td>
+            <td>891.54</td>
+            <td>901.44</td>
+            <td>374.58</td>
+            <td><strong>359.21</strong></td>
+          </tr>
+          <tr>
+            <th style="text-align:left" rowspan="2">SVHN</th>
+            <td>Van. ResNet</td>
+            <td>96.23</td>
+            <td>92.63</td>
+            <td><strong>96.73</strong></td>
+            <td>93.14</td>
+            <td>83.67</td>
+            <td>1338.30</td>
+            <td>487.32</td>
+            <td><strong>250.02</strong></td>
+            <td>1749.48</td>
+          </tr>
+          <tr>
+            <td>Def. ResNet</td>
+            <td>92.67</td>
+            <td>43.26</td>
+            <td>36.99</td>
+            <td>38.98</td>
+            <td><strong>45.11</strong></td>
+            <td>739.40</td>
+            <td>1255.24</td>
+            <td><strong>286.71</strong></td>
+            <td>436.83</td>
+          </tr>
+          <tr>
+            <th style="text-align:left" rowspan="2">ImageNet</th>
+            <td>Van. ResNet</td>
+            <td>95.00</td>
+            <td>95.79</td>
+            <td><strong>99.47</strong></td>
+            <td>98.42</td>
+            <td>95.58</td>
+            <td>948.90</td>
+            <td><strong>604.31</strong></td>
+            <td>701.92</td>
+            <td>1501.13</td>
+          </tr>
+          <tr>
+            <td>Def. ResNet</td>
+            <td>71.50</td>
+            <td>50.77</td>
+            <td>33.99</td>
+            <td>47.55</td>
+            <td><strong>57.20</strong></td>
+            <td>914.58</td>
+            <td>2170.82</td>
+            <td>969.91</td>
+            <td><strong>381.97</strong></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>Finally, below you can see adversarial examples generated by AdvFlow and \(\mathcal{N}\)Attack. As you can see, our approach generates perturbations that look like clean data while this is not the case for \(\mathcal{N}\)Attack.</p>
+
+      <p><img src="https://hmdolatabadi.github.io/images/advflow/Adv_Samples.png" alt="Adv_Samples" /></p>
+
+      <h2>Conclusion</h2>
+
+      <p>In this short blog post, we covered the general idea of designing black-box adversarial attacks using normalizing flows, resulting in an algorithm we called AdvFlow. The most interesting property of AdvFlows is that they provide a close connection between clean and adversarial data distributions. We saw the effectiveness of the proposed approach in fooling adversarial example detectors that assume adversaries come from a different density than the intact data. For more details, please read the <a href="https://arxiv.org/abs/2007.07435" target="_blank">camera ready version of our paper</a>. Also, you can find the PyTorch implementation of AdvFlows at <a href="https://github.com/hmdolatabadi/AdvFlow" target="_blank">this repository</a>. Should you have any questions, I would be happy to have a chat with you. Take care!</p>
+
+      <div class="article-nav">
+        <a href="../../index.html">← back to the studio</a>
+        <span></span>
+      </div>
+
+    </div>
+
+  </div>
+</article>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-row">
+      <div class="sign">— Hadi.</div>
+      <div class="foot-links">
+        <a href="https://x.com/hmdolatabadi">X</a>
+        <a href="https://github.com/hmdolatabadi">GitHub</a>
+        <a href="#">Scholar</a>
+        <a href="mailto:hadi@pluralis.ai">Email</a>
+        <a href="#">RSS</a>
+      </div>
+    </div>
+    <div class="colophon">
+      <span>Math via KaTeX</span>
+      <span>v1.0 · April 2026</span>
+    </div>
+  </div>
+</footer>
+
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.js" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/contrib/auto-render.min.js" crossorigin="anonymous"
+  onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}, {left: '\\(', right: '\\)', display: false}, {left: '\\[', right: '\\]', display: true}], throwOnError: false});"></script>
+
+</body>
+</html>
