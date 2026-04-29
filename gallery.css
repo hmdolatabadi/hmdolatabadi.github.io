@@ -245,6 +245,12 @@
   content: ""; position: absolute; inset: 7px;
   border: 1px solid var(--rule-2); border-radius: 2px; pointer-events: none;
 }
+.bio-solo .monogram.photo { padding: 6px; }
+.bio-solo .monogram.photo::before { display: none; }
+.bio-solo .monogram.photo img {
+  width: 100%; height: 100%; object-fit: cover;
+  display: block; border-radius: 2px;
+}
 .bio-solo .monogram .mark {
   font-family: var(--serif); font-style: italic; font-weight: 300;
   font-size: 110px; color: var(--accent-ink); letter-spacing: -0.05em; line-height: 0.8;
