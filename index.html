@@ -331,8 +331,9 @@
     return (
       '<div class="ps-card" data-iso="' + escapeHtml(post.created_at) +
       '" data-url="' + escapeHtml(url) + '">' +
-        '<span class="w"><b>' + when + '</b><span class="ps-more">read on X →</span></span>' +
+        '<span class="w"><b>' + when + '</b></span>' +
         '<p>' + text + '</p>' +
+        '<span class="ps-more">read on X →</span>' +
       '</div>'
     );
   }
