@@ -48,24 +48,28 @@ def is_reply_to_other(t, own_id: str) -> bool:
     return rid is not None and rid != own_id
 
 
+QUOTE_URL_RE = re.compile(r"https?://(?:x|twitter)\.com/[^/\s]+/status/\d+")
+
+
 def expand_text(t, handle: str) -> str:
     text = t.get("full_text", "")
     for u in t.get("entities", {}).get("urls", []):
         short = u.get("url")
         expanded = u.get("expanded_url")
         if short and expanded:
-            if (
-                f"x.com/{handle}/status/" in expanded
-                or f"twitter.com/{handle}/status/" in expanded
-            ):
-                text = text.replace(short, "").rstrip()
-            else:
-                text = text.replace(short, expanded)
+            text = text.replace(short, expanded)
     for m in t.get("entities", {}).get("media", []):
         short = m.get("url")
         if short:
-            text = text.replace(short, "").rstrip()
-    return html.unescape(text).strip()
+            text = text.replace(short, "")
+    # Strip quote-tweet URLs entirely — they're noise in the card preview;
+    # readers click the card to see the full thread on X.
+    text = QUOTE_URL_RE.sub("", text)
+    text = html.unescape(text)
+    # Collapse whitespace runs left behind by URL stripping.
+    text = re.sub(r"[ \t]+\n", "\n", text)
+    text = re.sub(r"\n{3,}", "\n\n", text)
+    return text.strip()
 
 
 def extract_data_dir(archive: Path, work: Path) -> Path:

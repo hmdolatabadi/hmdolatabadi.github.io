@@ -1,5 +1,5 @@
 {
-  "updated": "2026-04-30T03:36:16Z",
+  "updated": "2026-04-30T04:28:32Z",
   "handle": "hmdolatabadi",
   "note": "Generated from X data archive on 2026-04-30. Original posts only — no retweets, no replies to others.",
   "posts": [
@@ -18,43 +18,43 @@
     {
       "id": "2047522668967059712",
       "created_at": "2026-04-24T03:47:00Z",
-      "text": "I got to know about @Pseudomanifold when I was doing some research on persistence homology during my postdoc. I highly recommend reading his latest blog on \"epistemic humility\" which is a good reminder that LLMs can create an illusion about our knowledge and the key is to remain… https://x.com/Pseudomanifold/status/2046913577458585738",
+      "text": "I got to know about @Pseudomanifold when I was doing some research on persistence homology during my postdoc. I highly recommend reading his latest blog on \"epistemic humility\" which is a good reminder that LLMs can create an illusion about our knowledge and the key is to remain…",
       "url": "https://x.com/hmdolatabadi/status/2047522668967059712"
     },
     {
       "id": "2045653125915365545",
       "created_at": "2026-04-18T23:58:06Z",
-      "text": "Kinda agree with Yann on this one, and here's why:\n\nFirst, as of today, AI plays a magnifier role: if you're already good at your job and know what you need to do, AI just amplifies your efficiency. That's been the reality of it.\n\nSecond, a lot of companies are going to blame AI… https://x.com/ylecun/status/2045610129119117574",
+      "text": "Kinda agree with Yann on this one, and here's why:\n\nFirst, as of today, AI plays a magnifier role: if you're already good at your job and know what you need to do, AI just amplifies your efficiency. That's been the reality of it.\n\nSecond, a lot of companies are going to blame AI…",
       "url": "https://x.com/hmdolatabadi/status/2045653125915365545"
     },
     {
       "id": "2045477375727796249",
       "created_at": "2026-04-18T12:19:44Z",
-      "text": "Encouraging that big labs are starting to recognise the power of distributed compute. Hopefully we see more of this trend towards fully decentralised infrastructure. https://x.com/Kimi_Moonshot/status/2045461663898599472",
+      "text": "Encouraging that big labs are starting to recognise the power of distributed compute. Hopefully we see more of this trend towards fully decentralised infrastructure.",
       "url": "https://x.com/hmdolatabadi/status/2045477375727796249"
     },
     {
       "id": "2044183188210364658",
       "created_at": "2026-04-14T22:37:05Z",
-      "text": "Pluralis is organising a workshop on decentralised training. If you're attending this year's #ICLR in Rio, please drop by! Many interesting talks have been planned. https://x.com/Pluralis/status/2044069139518542081",
+      "text": "Pluralis is organising a workshop on decentralised training. If you're attending this year's #ICLR in Rio, please drop by! Many interesting talks have been planned.",
       "url": "https://x.com/hmdolatabadi/status/2044183188210364658"
     },
     {
       "id": "2042137314651205668",
       "created_at": "2026-04-09T07:07:31Z",
-      "text": "Inspired by LLM knowledge base idea from @karpathy, I converted my entire workspace in obsidian into a knowledge graph that claude/codex co-created for me. It's surprisingly more efficient in finding relevant literature for my ideas and linking them together. Giving this a few… https://x.com/karpathy/status/2039805659525644595",
+      "text": "Inspired by LLM knowledge base idea from @karpathy, I converted my entire workspace in obsidian into a knowledge graph that claude/codex co-created for me. It's surprisingly more efficient in finding relevant literature for my ideas and linking them together. Giving this a few…",
       "url": "https://x.com/hmdolatabadi/status/2042137314651205668"
     },
     {
       "id": "2036739906886836479",
       "created_at": "2026-03-25T09:40:09Z",
-      "text": "As a reviewer, I keep seeing other reviewers ask authors for experiments that basically require clusters of H200s and above. Not everyone has that access. We're gatekeeping based on compute budgets, not research quality.\n\nI proposed this before to @iclr_conf PC committee, but… https://x.com/tha_ajanthan/status/2036668564300759278",
+      "text": "As a reviewer, I keep seeing other reviewers ask authors for experiments that basically require clusters of H200s and above. Not everyone has that access. We're gatekeeping based on compute budgets, not research quality.\n\nI proposed this before to @iclr_conf PC committee, but…",
       "url": "https://x.com/hmdolatabadi/status/2036739906886836479"
     },
     {
       "id": "2036374420348903775",
       "created_at": "2026-03-24T09:27:50Z",
-      "text": "Hearing @karpathy's latest interview feels like our vision for @Pluralis: \"Auto-research could turn into a decentralised pool of workers in untrusted systems... there should be a verification mechanism.\"\n\nThe mapping is simple: \n🏗️ System ➔ LLM \n🐝 Pool of Workers ➔ Compute…",
+      "text": "Hearing @karpathy's latest interview feels like our vision for @Pluralis: \"Auto-research could turn into a decentralised pool of workers in untrusted systems... there should be a verification mechanism.\"\n\nThe mapping is simple:\n🏗️ System ➔ LLM\n🐝 Pool of Workers ➔ Compute…",
       "url": "https://x.com/hmdolatabadi/status/2036374420348903775"
     },
     {
@@ -96,13 +96,13 @@
     {
       "id": "2032236458480984320",
       "created_at": "2026-03-12T23:25:03Z",
-      "text": "In this new era powered by autonomous agents, we have to reinvent ourselves and try to adapt. Experiments that could take days to design and run can now run much faster, making iteration easier. The question becomes, how we evaluate their performance when we reach uncharted… https://x.com/tha_ajanthan/status/2032209015040839848",
+      "text": "In this new era powered by autonomous agents, we have to reinvent ourselves and try to adapt. Experiments that could take days to design and run can now run much faster, making iteration easier. The question becomes, how we evaluate their performance when we reach uncharted…",
       "url": "https://x.com/hmdolatabadi/status/2032236458480984320"
     },
     {
       "id": "2024695040698962043",
       "created_at": "2026-02-20T03:58:09Z",
-      "text": "Great work led by @tha_ajanthan on async LM training using data/pipeline parallelism. The key idea is to use weight look-ahead to handle pipeline staleness, and EMA-corrected sparse averaging to handle data parallel staleness. No expensive sync needed. https://x.com/tha_ajanthan/status/2024649548522803638",
+      "text": "Great work led by @tha_ajanthan on async LM training using data/pipeline parallelism. The key idea is to use weight look-ahead to handle pipeline staleness, and EMA-corrected sparse averaging to handle data parallel staleness. No expensive sync needed.",
       "url": "https://x.com/hmdolatabadi/status/2024695040698962043"
     },
     {
@@ -132,43 +132,43 @@
     {
       "id": "1994908812504175014",
       "created_at": "2025-11-29T23:18:19Z",
-      "text": "Kudos to @allen_ai and the Olmo team for being such good advocates for true open science. https://x.com/natolambert/status/1994853519225229499",
+      "text": "Kudos to @allen_ai and the Olmo team for being such good advocates for true open science.",
       "url": "https://x.com/hmdolatabadi/status/1994908812504175014"
     },
     {
       "id": "1989560281119219954",
       "created_at": "2025-11-15T05:05:09Z",
-      "text": "Socratic wisdom teaches us that true wisdom isn't knowing all answers, but acknowledging the limits of our own knowledge.\n\n#ICLR https://x.com/YixuanEvenXu/status/1988692945835381196",
+      "text": "Socratic wisdom teaches us that true wisdom isn't knowing all answers, but acknowledging the limits of our own knowledge.\n\n#ICLR",
       "url": "https://x.com/hmdolatabadi/status/1989560281119219954"
     },
     {
       "id": "1968447100942721402",
       "created_at": "2025-09-17T22:48:55Z",
-      "text": "No RDMA 100GB+, no problem! @PluralisHQ, we do LLM training with <30 Mbps comms :)  \n\nJoin the Node0 run: https://dashboard.pluralis.ai",
+      "text": "No RDMA 100GB+, no problem! @PluralisHQ, we do LLM training with <30 Mbps comms :)\n\nJoin the Node0 run: https://dashboard.pluralis.ai",
       "url": "https://x.com/hmdolatabadi/status/1968447100942721402"
     },
     {
       "id": "1968090617151680929",
       "created_at": "2025-09-16T23:12:23Z",
-      "text": "Node-0 is live... You can join if you have a 16GB+ GPU!\n\nProud to see the collaborative effort of our team paid off. This is groundbreaking: true decentralized AI training where anyone can contribute to training a model from all over the world. \n\nJoin the swarm! https://x.com/Pluralis/status/1968087514180460936",
+      "text": "Node-0 is live... You can join if you have a 16GB+ GPU!\n\nProud to see the collaborative effort of our team paid off. This is groundbreaking: true decentralized AI training where anyone can contribute to training a model from all over the world.\n\nJoin the swarm!",
       "url": "https://x.com/hmdolatabadi/status/1968090617151680929"
     },
     {
       "id": "1947470236560855057",
       "created_at": "2025-07-22T01:34:21Z",
-      "text": "Had an incredible week @ #ICML2025. Glad to have made new friends and met with the old ones during the conference. https://x.com/AlexanderLong/status/1947447927179514007",
+      "text": "Had an incredible week @ #ICML2025. Glad to have made new friends and met with the old ones during the conference.",
       "url": "https://x.com/hmdolatabadi/status/1947470236560855057"
     },
     {
       "id": "1930036469361717343",
       "created_at": "2025-06-03T22:58:47Z",
-      "text": "Paper's out now, check it out! Live run in the coming days...\n\n#DeAI #LLM #research https://x.com/Pluralis/status/1929916173530849439",
+      "text": "Paper's out now, check it out! Live run in the coming days...\n\n#DeAI #LLM #research",
       "url": "https://x.com/hmdolatabadi/status/1930036469361717343"
     },
     {
       "id": "1928293910142427253",
       "created_at": "2025-05-30T03:34:28Z",
-      "text": "When I joined @PluralisHQ, I read this paper and I was blown away by its simplicity and effectiveness. Hope you all enjoy reading this great work. https://x.com/Pluralis/status/1928119140830613731",
+      "text": "When I joined @PluralisHQ, I read this paper and I was blown away by its simplicity and effectiveness. Hope you all enjoy reading this great work.",
       "url": "https://x.com/hmdolatabadi/status/1928293910142427253"
     },
     {
@@ -270,7 +270,7 @@
     {
       "id": "1687240202501455875",
       "created_at": "2023-08-03T23:13:06Z",
-      "text": "A direct result of the current system! Reviewers have conflict of interest! An \"expert\" reviewer in an area is someone who has a similar paper in the same area under review. So, they feel that they need to score all the papers under their hand low to get in. https://x.com/SebastienBubeck/status/1686879727884304386",
+      "text": "A direct result of the current system! Reviewers have conflict of interest! An \"expert\" reviewer in an area is someone who has a similar paper in the same area under review. So, they feel that they need to score all the papers under their hand low to get in.",
       "url": "https://x.com/hmdolatabadi/status/1687240202501455875"
     },
     {
@@ -348,13 +348,13 @@
     {
       "id": "1489875293829726208",
       "created_at": "2022-02-05T08:15:25Z",
-      "text": "But let's be honest, TikZ figures/diagrams look sooo smooth 🤩 totally worth the effort. https://x.com/LongFormMath/status/1489657684257218564",
+      "text": "But let's be honest, TikZ figures/diagrams look sooo smooth 🤩 totally worth the effort.",
       "url": "https://x.com/hmdolatabadi/status/1489875293829726208"
     },
     {
       "id": "1451471745169248258",
       "created_at": "2021-10-22T08:53:25Z",
-      "text": "Would be interesting to see the correlation of social media attention (likes+comments) with the acceptance rate. https://x.com/labmlai/status/1448307680028741639",
+      "text": "Would be interesting to see the correlation of social media attention (likes+comments) with the acceptance rate.",
       "url": "https://x.com/hmdolatabadi/status/1451471745169248258"
     },
     {
@@ -378,7 +378,7 @@
     {
       "id": "1448892767661297665",
       "created_at": "2021-10-15T06:05:29Z",
-      "text": "Setting its marvelous quality of image generation aside, I personally like reading the approach of StyleGAN3 which is based on basic signal processing including shannon-nyquist theorem and aliasing. https://x.com/hardmaru/status/1447735092630069253",
+      "text": "Setting its marvelous quality of image generation aside, I personally like reading the approach of StyleGAN3 which is based on basic signal processing including shannon-nyquist theorem and aliasing.",
       "url": "https://x.com/hmdolatabadi/status/1448892767661297665"
     },
     {
@@ -480,7 +480,7 @@
     {
       "id": "1384786567781257218",
       "created_at": "2021-04-21T08:30:20Z",
-      "text": "Yesterday, I went back to UniMelb after 13 months of WFH (Work isn't For Home 🙂) and into our beautiful, newly built building, the Melbourne Connect. Extremely happy to finaly see the face of my colleagues outside of a ZOOM meeting! https://x.com/melbconnect/status/1382535866443128834",
+      "text": "Yesterday, I went back to UniMelb after 13 months of WFH (Work isn't For Home 🙂) and into our beautiful, newly built building, the Melbourne Connect. Extremely happy to finaly see the face of my colleagues outside of a ZOOM meeting!",
       "url": "https://x.com/hmdolatabadi/status/1384786567781257218"
     },
     {
@@ -492,7 +492,7 @@
     {
       "id": "1339386786070446081",
       "created_at": "2020-12-17T01:47:49Z",
-      "text": "Finally, a good step in the right direction... https://x.com/shortstein/status/1339355677903310849",
+      "text": "Finally, a good step in the right direction...",
       "url": "https://x.com/hmdolatabadi/status/1339386786070446081"
     },
     {
@@ -600,7 +600,7 @@
     {
       "id": "1279884231355691008",
       "created_at": "2020-07-05T21:05:54Z",
-      "text": "Excited to be part of INNF+ workshop in ICML this year 🙂 https://x.com/chinwei_h/status/1279149885841903619",
+      "text": "Excited to be part of INNF+ workshop in ICML this year 🙂",
       "url": "https://x.com/hmdolatabadi/status/1279884231355691008"
     },
     {

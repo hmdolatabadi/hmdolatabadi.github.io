@@ -179,18 +179,31 @@
   border-radius: 4px;
   padding: 16px 18px;
   display: flex; flex-direction: column; gap: 10px;
-  min-height: 140px;
+  height: 200px;
+  overflow: hidden;
   transition: border-color .15s, background .15s;
 }
 .ps-card[data-url]:hover { border-color: var(--accent); background: var(--paper-2); cursor: pointer; }
+.ps-card[data-url]:hover .ps-more { color: var(--accent-ink); }
 .ps-card .w {
   font-family: var(--mono); font-size: 10px; color: var(--faint);
   letter-spacing: 0.12em; text-transform: uppercase;
+  display: flex; justify-content: space-between; align-items: center;
 }
 .ps-card .w b { color: var(--accent-ink); font-weight: 500; }
+.ps-card .ps-more {
+  font-family: var(--mono); font-size: 10px; color: var(--faint);
+  letter-spacing: 0.12em; text-transform: uppercase;
+  transition: color .15s;
+}
 .ps-card p {
   font-family: var(--serif); font-size: 15.5px; color: var(--ink);
-  margin: 0; line-height: 1.5;
+  margin: 0; line-height: 1.5; flex: 1; min-height: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .ps-card p em { color: var(--accent-ink); font-style: italic; }
 .ps-card .thread { display: inline-block; font-family: var(--mono); font-size: 10px; color: var(--muted); background: var(--paper-2); border: 1px solid var(--rule-2); padding: 1px 6px; border-radius: 3px; margin-left: 4px; }
